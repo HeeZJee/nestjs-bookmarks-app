@@ -1,3 +1,5 @@
+
+
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
@@ -8,4 +10,28 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+
+}
+
+
+model User {
+  id        Int      @default(autoincrement()) @id
+  createdAt DateTime @default(now())  
+  updatedAt DateTime  @updatedAt
+  
+  email String 
+  hash String
+
+  firstName String?
+  lastName String?
+}
+
+model BookMark{
+  id        Int      @default(autoincrement()) @id
+  createdAt DateTime @default(now())  
+  updatedAt DateTime  @updatedAt
+
+  title String
+  description String?
+  link String
 }
