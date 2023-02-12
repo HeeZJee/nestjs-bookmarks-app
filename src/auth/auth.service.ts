@@ -31,7 +31,33 @@ export class AuthService {
     }
   }
 
-  signin() {
+  async signin(dto: AuthDto) {
+
+    const email = dto.email;
+    const hash = dto.password;
+
+    // find user by email in prima 
+    const user = await this.prisma.user.findUnique({
+      where: { email },
+    });
+
+    // if you don't find user, throw error
+    if (!user) {
+      throw new ForbiddenException('Invalid credentials');
+    }
+
+    // compare password
+    const passwordValid = await argon2.verify(user.hash, hash);
+    
+    // if password is not correct, throw error
+    if (!passwordValid) {
+      throw new ForbiddenException('Invalid credentials');
+    }
+    
+    // all good, return user
+    delete user.hash;
+    return user;
+    
     return { msg: 'signin service called' };
   }
 }
